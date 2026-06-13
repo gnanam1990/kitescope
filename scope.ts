@@ -9,6 +9,7 @@ type Tx = {
 };
 
 type AddressInfo = {
+  hash: string;
   name: string | null;
   is_contract: boolean;
   is_verified: boolean;
@@ -80,7 +81,7 @@ async function main() {
 
   const txs = await getTransactions(address);
   const info = await getAddressInfo(address);
-  (info as any).hash = address;
+  info.hash = address;
 
   const score = reliabilityScore(txs, info);
 
