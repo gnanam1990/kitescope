@@ -1,16 +1,30 @@
 {
   "name": "kitescope",
   "version": "1.0.0",
-  "description": "",
+  "description": "Transparent on-chain reliability scoring for Kite addresses",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "scope": "tsx scope.ts",
+    "check": "tsx check.ts",
+    "typecheck": "tsc --noEmit"
   },
-  "keywords": [],
+  "keywords": [
+    "kite",
+    "blockchain",
+    "reputation",
+    "reliability-score",
+    "viem",
+    "kitescan"
+  ],
   "author": "",
-  "license": "ISC",
+  "license": "MIT",
   "type": "commonjs",
   "dependencies": {
     "viem": "^2.52.2"
+  },
+  "devDependencies": {
+    "@types/node": "^26.4.0",
+    "tsx": "^4.19.2",
+    "typescript": "^5.7.2"
   }
 }

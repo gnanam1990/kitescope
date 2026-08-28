@@ -9,7 +9,15 @@ const kite = {
 
 const client = createPublicClient({ chain: kite, transport: http() });
 
-const address = "0xe1844c5D63a9543023008D332Bd3d2e6f1FE1043" as const;
+const DEFAULT_ADDRESS = "0xe1844c5D63a9543023008D332Bd3d2e6f1FE1043";
+
+const arg = process.argv[2] ?? DEFAULT_ADDRESS;
+if (!/^0x[0-9a-fA-F]{40}$/.test(arg)) {
+  console.error(`Not a valid address: ${arg}`);
+  console.error("Usage: npx tsx check.ts [0x...]");
+  process.exit(1);
+}
+const address = arg as `0x${string}`;
 
 async function main() {
   const balance = await client.getBalance({ address });

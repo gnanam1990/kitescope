@@ -48,7 +48,7 @@ function uniqueCounterparties(txs: Tx[], self: string): number {
 }
 
 // The reliability score — fully transparent. Each part shown to the user.
-function reliabilityScore(txs: Tx[], info: AddressInfo) {
+function reliabilityScore(txs: Tx[], info: AddressInfo, self: string) {
   const breakdown: { label: string; points: number; max: number }[] = [];
 
   // 1. Success rate: up to 40 pts
@@ -60,7 +60,7 @@ function reliabilityScore(txs: Tx[], info: AddressInfo) {
   breakdown.push({ label: "Recent activity", points: activity, max: 25 });
 
   // 3. Counterparty diversity: up to 20 pts
-  const cp = uniqueCounterparties(txs, info.hash ?? "");
+  const cp = uniqueCounterparties(txs, self);
   const diversity = Math.min(20, cp * 2);
   breakdown.push({ label: "Counterparty diversity", points: diversity, max: 20 });
 
@@ -75,14 +75,24 @@ function reliabilityScore(txs: Tx[], info: AddressInfo) {
   return { total, breakdown };
 }
 
+const DEFAULT_ADDRESS = "0xe1844c5D63a9543023008D332Bd3d2e6f1FE1043";
+
+function addressFromArgv(): string {
+  const arg = process.argv[2] ?? DEFAULT_ADDRESS;
+  if (!/^0x[0-9a-fA-F]{40}$/.test(arg)) {
+    console.error(`Not a valid address: ${arg}`);
+    console.error("Usage: npx tsx scope.ts [0x...]");
+    process.exit(1);
+  }
+  return arg;
+}
+
 async function main() {
-  const address = "0xe1844c5D63a9543023008D332Bd3d2e6f1FE1043";
+  const address = addressFromArgv();
 
   const txs = await getTransactions(address);
   const info = await getAddressInfo(address);
-  (info as any).hash = address;
-
-  const score = reliabilityScore(txs, info);
+  const score = reliabilityScore(txs, info, address);
 
   console.log("=================================");
   console.log("Address:    ", address);
